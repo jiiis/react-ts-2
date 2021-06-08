@@ -1,13 +1,15 @@
 import React from 'react';
 
-import Recorder from '../Recorder/Recorder'
+import Recorder from '../Recorder'
+import Calendar from '../Calendar'
 
 import './App.css';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div>
       <Recorder />
+      <Calendar />
     </div>
   );
 }

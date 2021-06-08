@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { normalizeTime } from '../../lib/utils'
 import { selectDateStart, start, stop } from '../../redux/recorder'
+import { createEvent } from '../../redux/events'
 
 import './Recorder.css'
 
-const normalizeTime = (num: number) => num < 10 ? `0${num}` : `${num}`
-
 const Recorder = () => {
   const dispatch = useDispatch()
-  
+
   const dateStart = useSelector(selectDateStart)
 
   const started = dateStart !== ''
@@ -23,12 +23,13 @@ const Recorder = () => {
     if (started) {
       window.clearInterval(timer.current)
 
+      dispatch(createEvent())
       dispatch(stop())
     } else {
       dispatch(start())
 
       timer.current = window.setInterval(() => {
-        setCount(count => count + 1)
+        setCount((count) => count + 1)
       }, 1000)
     }
   }
@@ -39,7 +40,9 @@ const Recorder = () => {
     }
   }, [])
 
-  let seconds = started ? Math.floor((Date.now() - new Date(dateStart).getTime()) / 1000) : 0
+  let seconds = started
+    ? Math.floor((Date.now() - new Date(dateStart).getTime()) / 1000)
+    : 0
 
   const hours = seconds ? Math.floor(seconds / 60 / 60) : 0
 
@@ -54,7 +57,9 @@ const Recorder = () => {
       <button className="recorder-record" onClick={onRecordButtonClick}>
         <span></span>
       </button>
-      <div className="recorder-counter">{normalizeTime(hours)}:{normalizeTime(minutes)}:{normalizeTime(seconds)}</div>
+      <div className="recorder-counter">
+        {normalizeTime(hours)}:{normalizeTime(minutes)}:{normalizeTime(seconds)}
+      </div>
     </div>
   )
 }
